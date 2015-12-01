@@ -30,7 +30,7 @@ public class Loader {
 			}
 			return "success";
 		} catch (ArrayIndexOutOfBoundsException e) {
-			return(e.getMessage());
+			return("Array Index " + e.getMessage());
 		} catch (NoSuchElementException e) {
 			return("NoSuchElementException");
 		} catch (FileNotFoundException e1) {

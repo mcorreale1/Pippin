@@ -65,7 +65,6 @@ public class Assembler {
 					}
 				}
 				
-				
 				//Now if nothing wrong with line, trim and add to arrayList
 				//In other words, if line is non blank and has no blank space
 				//at the beginning of the line..
@@ -151,14 +150,11 @@ public class Assembler {
 						retVal = -1;
 					}
 				}
-			}
-			
+			}	
 		} catch (FileNotFoundException e) {
 			error.append("Unable to open the assembled file.");
 			retVal = -1;
 		}
-
-		
 		return retVal;
 	}
 }
