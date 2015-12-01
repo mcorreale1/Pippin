@@ -63,10 +63,11 @@ public class Assembler {
 						retVal = currentLineNumber;
 					}
 				}
-
+				
+				
 				//Now if nothing wrong with line, trim and add to arrayList
 				//In other words, if line is non blank and has no blank space
-				//at the beginning of the line...
+				//at the beginning of the line..
 				if (!(line.trim().length() == 0) && 
 						!(line.charAt(0) == ' ') &&
 						!(line.charAt(0) == '\t')) {
@@ -78,9 +79,16 @@ public class Assembler {
 			ArrayList<String> inputData = new ArrayList<>();
 			if (retVal == 0) {
 				boolean valesAreCode = true;
-				String line2;
 				for(int i = 0; i < inputText.size() && retVal == 0; i++) {
-					
+					if (inputText.get(i).equals("ENDCODE")) {
+						if(!(inputText.get(i).equalsIgnoreCase("ENDCODE"))) {
+							error.append("Error on line "+ (i+1) + ": \"ENDCODE\" must be upper case");
+							retVal = i+1;
+						}
+						inputData.add(inputText.get(i));
+					} else {
+						inputCode.add(inputText.get(i));
+					}
 				}
 			}
 			
@@ -88,5 +96,6 @@ public class Assembler {
 			error.append("Unable to open the assembled file.");
 			retVal = -1;
 		}
+		return retVal;
 	}
 }
