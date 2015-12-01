@@ -78,20 +78,22 @@ public class Assembler {
 			ArrayList<String> inputCode = new ArrayList<>();
 			ArrayList<String> inputData = new ArrayList<>();
 			if (retVal == 0) {
-				boolean valesAreCode = true;
+				boolean valuesAreCode = true;
 				for(int i = 0; i < inputText.size() && retVal == 0; i++) {
+					if (valuesAreCode == false) {
+						inputData.add(inputText.get(i));
+					} else {
+						inputCode.add(inputText.get(i));
+					}
 					if (inputText.get(i).equals("ENDCODE")) {
 						if(!(inputText.get(i).equalsIgnoreCase("ENDCODE"))) {
 							error.append("Error on line "+ (i+1) + ": \"ENDCODE\" must be upper case");
 							retVal = i+1;
 						}
-						inputData.add(inputText.get(i));
-					} else {
-						inputCode.add(inputText.get(i));
-					}
+						valuesAreCode = false;
+					} 
 				}
 			}
-			
 		} catch (FileNotFoundException e) {
 			error.append("Unable to open the assembled file.");
 			retVal = -1;
