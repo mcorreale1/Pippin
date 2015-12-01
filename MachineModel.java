@@ -10,6 +10,7 @@ public class MachineModel extends Observable {
 	private Registers cpu = new Registers();
 	private Memory memory = new Memory();
 	private boolean withGUI = false;
+	private Code code = new Code();
 
 	public MachineModel() {
 		this(false);
@@ -247,6 +248,16 @@ public class MachineModel extends Observable {
 		} else {
 			System.exit(0);
 		}
+	}
+	
+	//package private getter for code
+	Code getCode() {
+		return code;
+	}
+	
+	//Delegate setter for setCode
+	public void setCode(int op, int arg) {
+		code.setCode(op, arg);
 	}
 
 

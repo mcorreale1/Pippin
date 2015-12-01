@@ -1,7 +1,5 @@
 package pippin;
 
-
-
 public class DivideByZeroException extends RuntimeException {   /**
 	 * 
 	 */
