@@ -265,4 +265,8 @@ public class MachineModel extends Observable {
 		private int accumulator;
 		private int programCounter;
 	}
+	
+	public void step(){}
+	
+	public void clear(){}
 }
