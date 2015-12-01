@@ -2,6 +2,7 @@ package pippin;
 
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.Scanner;
 import java.util.Set;
@@ -77,6 +78,8 @@ public class Assembler {
 			
 			ArrayList<String> inputCode = new ArrayList<>();
 			ArrayList<String> inputData = new ArrayList<>();
+			ArrayList<String> outputCode = new ArrayList<>();
+			ArrayList<String> outputData = new ArrayList<>();
 			if (retVal == 0) {
 				boolean valuesAreCode = true;
 				for(int i = 0; i < inputText.size() && retVal == 0; i++) {
@@ -91,13 +94,71 @@ public class Assembler {
 							retVal = i+1;
 						}
 						valuesAreCode = false;
-					} 
+					}
+					//inputCode.remove(inputCode.size()-1);
+				}
+				
+				//Populate output code array
+				for(int i = 0; i< inputCode.size() && retVal == 0; i++) {
+					String[] parts = inputCode.get(i).split("\\s+");
+					if (!InstructionMap.opcode.containsKey(parts[0].toUpperCase())) {
+						error.append("Error on line " + (i+1) + ": illegal mnemonic");
+					} else if(!(parts[0].equals(parts[0].toUpperCase()))) {
+						error.append("Error on line " + (i+1) + ": mnemonic must be upper case");
+					} else if (noArgument.contains(parts[0])) {
+						if(parts.length > 1) {
+							error.append("Error on line " + (i+1) + ": this mnemonic cannot take arguments");
+						}
+						else {
+							outputCode.add(Integer.toString(InstructionMap.opcode.get(parts[0]), 16) + " 0");	
+						}
+					} else 
+						if(parts.length > 2) {
+							error.append("Error on line " + (i+1) + ": this mnemonic has too many arguments");
+						} else {
+						try {
+							int arg = Integer.parseInt(parts[1],16);
+							outputCode.add(Integer.toString(InstructionMap.opcode.get(parts[0]), 16) + " " + Integer.toString(arg, 16));
+						} catch(Error e) {
+							error.append("Error on line " + (i+1) + ": argument is not a hex number");
+						} 
+					}
+				}
+				for(int i = 0; i < inputData.size() && retVal == 0; i++) {
+					String[] parts = inputData.get(i).split("\\s+");
+					try {
+						int arg = Integer.parseInt(parts[0],16);
+						int arg2 = Integer.parseInt(parts[1],16);
+						outputData.add(inputData.get(i));
+					} catch (Error e) {
+						error.append("Error on line " + (i+1) + ": argument is not a hex number");
+					}
+				}
+				if(retVal == 0) {
+					try (PrintWriter outp = new PrintWriter(output)){
+						// for the Strings str in outputCode, write them using outp.println(str)
+						// output -1 to separate code from data
+						// output the Strings in outputData
+						for(String s: outputCode) {
+							outp.println(s);
+						}
+						for(String s: outputData) {
+							outp.println(s);
+						}
+						outp.close();
+					} catch (FileNotFoundException e) {
+						error.append("Error: Unable to write the assembled program to the output file");
+						retVal = -1;
+					}
 				}
 			}
+			
 		} catch (FileNotFoundException e) {
 			error.append("Unable to open the assembled file.");
 			retVal = -1;
 		}
+
+		
 		return retVal;
 	}
 }
