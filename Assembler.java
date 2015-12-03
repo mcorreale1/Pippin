@@ -40,23 +40,36 @@ public class Assembler {
 
 			ArrayList<String> inputText = new ArrayList<>();
 			int currentLineNumber = 0;
-			int blankLineNumber = 0;
+			//int blankLineNumber = 0;
+			int consecutiveBlankLines = 0;
 			boolean isBlankLine = false;
 			String line;
 
 			while (inp.hasNextLine() && retVal == 0) {
 				currentLineNumber ++;
-				blankLineNumber++;
+				//blankLineNumber++;
 				line = inp.nextLine();
+				
 				//Check for blank line
-				if (line.trim().length() == 0) {
+				//If line is not blank, check to see if boolean is true, if it is, 
+				//We have a blank line error
+				if (!(line.trim().length() == 0)) {
 					if (isBlankLine) {
+						retVal = currentLineNumber - consecutiveBlankLines;
 						error.append("Illegal blank line in source code.");
-						retVal = blankLineNumber;
-					} else {
-						isBlankLine = true;
-					}	
+					}
 				}
+				
+				//Check to see if we have a blank line
+				//If we do, increment consecutiveBlankLines (which we'll subtract 
+				//from current line number to keep track of where blank line occured)
+				//and set isBlankLine to true
+				if (line.trim().length() == 0) {
+					consecutiveBlankLines++;
+					isBlankLine = true;
+					
+				}
+
 				//Check for whitespace at the start of non blank line
 				if (!(line.trim().length() == 0)) {
 					if (line.charAt(0) == ' ' || line.charAt(0) == '\t') {
@@ -157,4 +170,10 @@ public class Assembler {
 		}
 		return retVal;
 	}
+	
+	 public static void main(String[] args) {
+	        StringBuilder error = new StringBuilder();
+	        int i = assemble(new File("factorial8.pasm"), new File("factorial8.pexe"), error);
+	        System.out.println(i + " " + error);
+	    }
 }
