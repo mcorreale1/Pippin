@@ -218,11 +218,7 @@ public class MachineModel extends Observable {
 //	public void setProgramCounter(int i) {
 //		cpu.programCounter = i;
 //	}
-	
-	public void copy(int arg) {
-		
-	}
-	
+
 	public int getChangedIndex() {
 		return memory.getChangedIndex();
 	}
