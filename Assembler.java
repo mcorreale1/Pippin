@@ -107,7 +107,15 @@ public class Assembler {
 						}
 						valuesAreCode = false;
 					}
+					
 					//inputCode.remove(inputCode.size()-1);
+				}
+				
+				//Remove ENDCODE from arraylist
+				for (int j = 0; j < inputCode.size(); j++) {
+					if (inputCode.get(j).equalsIgnoreCase("ENDCODE")) {
+						inputCode.remove(inputCode.get(j));
+					}
 				}
 				
 				//Populate output code array
@@ -173,7 +181,7 @@ public class Assembler {
 	
 	 public static void main(String[] args) {
 	        StringBuilder error = new StringBuilder();
-	        int i = assemble(new File("factorial8.pasm"), new File("factorial8.pexe"), error);
+	        int i = assemble(new File("merge.pasm"), new File("mergeCompare.pexe"), error);
 	        System.out.println(i + " " + error);
 	    }
 }

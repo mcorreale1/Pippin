@@ -19,7 +19,6 @@ public class MachineModel extends Observable {
 	public MachineModel(boolean b) {
 		withGUI = b;
 
-
 		//Populating the INSTRUCTIONS TreeMap
 
 		//Entry for ADDI
@@ -204,12 +203,25 @@ public class MachineModel extends Observable {
 		INSTRUCTIONS.put(0x1F, arg -> {
 			halt();
 		});
+		
+		//INSTRUCTION_MAP entry for "COPY"
+		INSTRUCTIONS.put(0x1D,(arg) -> {
 
+		});
+		
+		//INSTRUCTION_MAP entry for "CPYN"
+		INSTRUCTIONS.put(0x1E, arg -> {
+			INSTRUCTIONS.get(0x1D).execute(memory.getData(arg));
+		});
 	}
 
 //	public void setProgramCounter(int i) {
 //		cpu.programCounter = i;
 //	}
+	
+	public void copy(int arg) {
+		
+	}
 	
 	public int getChangedIndex() {
 		return memory.getChangedIndex();

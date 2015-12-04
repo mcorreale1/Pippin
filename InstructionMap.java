@@ -36,6 +36,8 @@ public class InstructionMap {
 		opcode.put("CMPL", 0x19);
 		opcode.put("CMPZ", 0x1A);
 		opcode.put("HALT", 0x1F);
+		opcode.put("COPY", 0x1D);
+		opcode.put("CPYN", 0x1E);
 		
 		// put in the other mnemonic -> opcode mappings. The numeric values are given in Lab 10 and were used when
 		// defining the lambda expressions for the instructions
