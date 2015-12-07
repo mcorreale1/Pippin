@@ -216,10 +216,6 @@ public class MachineModel extends Observable {
 		});
 	}
 
-//	public void setProgramCounter(int i) {
-//		cpu.programCounter = i;
-//	}
-
 	public int getChangedIndex() {
 		return memory.getChangedIndex();
 	}
@@ -268,7 +264,17 @@ public class MachineModel extends Observable {
 	public void setCode(int op, int arg) {
 		code.setCode(op, arg);
 	}
-	
+	/**
+	 * Copys values from the location which is stored in data at location arg,
+	 * to the location that is stored in data at location arg+1, with a length of 
+	 * what is stored in data at location arg+2
+	 * @param arg location of the 3 arguments that copy will use, given by the lambda 0x1D.
+	 * @throws IllegalArgumentException throws when attempting to read from the actual arg
+	 * locations for copy. (arg, arg+1, arg+2), or when attempted to write over them.
+	 * @throws ArrayIndexOutOfBoundsException throws when attempted to read, or write outside the
+	 * bounds of the data array. 
+	 * 
+	 */
 	public void copy(int arg) {
 		 int args[] = {memory.getData(arg), memory.getData(arg+1), memory.getData(arg+2)};
 		 for(int i = 0; i < 2; i++) {
