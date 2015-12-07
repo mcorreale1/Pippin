@@ -206,7 +206,8 @@ public class MachineModel extends Observable {
 		
 		//INSTRUCTION_MAP entry for "COPY"
 		INSTRUCTIONS.put(0x1D,(arg) -> {
-
+			this.copy(arg);
+			cpu.programCounter++;
 		});
 		
 		//INSTRUCTION_MAP entry for "CPYN"
@@ -270,11 +271,13 @@ public class MachineModel extends Observable {
 	
 	public void copy(int arg) {
 		 int args[] = {memory.getData(arg), memory.getData(arg+1), memory.getData(arg+2)};
-		 int range = args[0] + args[2] - arg;
-		 if (range > 0 && range <= args[2]) {
-			 throw new IllegalArgumentException("Copy would corrupt arg");
-		 } else if (args[0] < 0 || args[0] > Memory.DATA_SIZE-1
-				 ||	args[1] < 0 || args[1] > Memory.DATA_SIZE-1) {
+		 for(int i = 0; i < 2; i++) {
+			 if(args[i] >= arg && args[i] <= arg+ args[2]) {
+				 throw new IllegalArgumentException("Instruction would corrupt args");
+			 }
+		 }
+		 if (args[0] < 0 || args[0] > Memory.DATA_SIZE-1
+			||	args[1] < 0 || args[1] > Memory.DATA_SIZE-1) {
 			 throw new ArrayIndexOutOfBoundsException("Source or target out of bounds");
 		 } 
 		 if(args[0] == args[1]) {
