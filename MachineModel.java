@@ -19,6 +19,7 @@ public class MachineModel extends Observable {
 	public MachineModel(boolean b) {
 		withGUI = b;
 
+
 		//Populating the INSTRUCTIONS TreeMap
 
 		//Entry for ADDI
@@ -203,22 +204,13 @@ public class MachineModel extends Observable {
 		INSTRUCTIONS.put(0x1F, arg -> {
 			halt();
 		});
-		
-		//INSTRUCTION_MAP entry for "COPY"
-		INSTRUCTIONS.put(0x1D,(arg) -> {
 
-		});
-		
-		//INSTRUCTION_MAP entry for "CPYN"
-		INSTRUCTIONS.put(0x1E, arg -> {
-			INSTRUCTIONS.get(0x1D).execute(memory.getData(arg));
-		});
 	}
 
 //	public void setProgramCounter(int i) {
 //		cpu.programCounter = i;
 //	}
-
+	
 	public int getChangedIndex() {
 		return memory.getChangedIndex();
 	}
@@ -267,28 +259,6 @@ public class MachineModel extends Observable {
 	public void setCode(int op, int arg) {
 		code.setCode(op, arg);
 	}
-	
-	public void copy(int arg) {
-		 int args[] = {memory.getData(arg), memory.getData(arg+1), memory.getData(arg+2)};
-		 int range = args[0] + args[2] - arg;
-		 if (range > 0 && range <= args[2]) {
-			 throw new IllegalArgumentException("Copy would corrupt arg");
-		 } else if (args[0] < 0 || args[0] > Memory.DATA_SIZE-1
-				 ||	args[1] < 0 || args[1] > Memory.DATA_SIZE-1) {
-			 throw new ArrayIndexOutOfBoundsException("Source or target out of bounds");
-		 } 
-		 if(args[0] == args[1]) {
-			 return;
-		 } else if(args[0] > args[1]) {
-			 for(int i = 0; i < args[2]; i++) {
-				 this.setData(args[1]+i, this.getData(args[0]+i));
-			 }
-		 } else {
-			 for(int i = args[2]; i > 0; i--) {
-				 this.setData(args[1]+i-1, this.getData(args[0]+i-1));
-			 }
-		 }
-	 }
 
 
 	public class Registers {
