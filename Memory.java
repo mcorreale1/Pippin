@@ -16,11 +16,11 @@ public class Memory {
 	}
 	
 	public void clear() {
-		for (int i = 0; i < data.length; i++) {
-			data[i] = 0;
-		}
-		changedIndex = -1;
-	}
+        for(int i = 0; i < DATA_SIZE; i++) {
+            data[i] = 0;
+        }
+        changedIndex = -1;
+    }
 	
 	int[] getData() {
 		return data;

@@ -268,5 +268,10 @@ public class MachineModel extends Observable {
 	
 	public void step(){}
 	
-	public void clear(){}
+	public void clear() {
+		Memory m = new Memory();
+		m.clear();
+		cpu.accumulator = 0;
+		cpu.programCounter = 0;
+	}
 }

@@ -10,6 +10,7 @@ import java.io.FileNotFoundException;
 import java.io.PrintWriter;
 import java.util.Observable;
 import java.util.Properties;
+import javax.swing.Timer;
 
 import javax.swing.JFrame;
 import javax.swing.JMenuBar;
@@ -29,6 +30,10 @@ public class MachineView extends Observable {
     private ProcessorViewPanel processorPanel;
     private MenuBarBuilder menuBuilder;
     private JFrame frame;
+    private States state;
+    private static final int TICK = 500; // timer tick = 1/2 second
+    private boolean autoStepOn = false;
+    private Timer timer;
 
 	public int getChangedIndex() {
 		return model.getChangedIndex();
@@ -132,16 +137,16 @@ public class MachineView extends Observable {
 		bar.add(menuBuilder.createFileMenu());
 		bar.add(menuBuilder.createExecuteMenu());
 
-		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-//		frame.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
+		frame.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
 		frame.addWindowListener(null); // needs work
-//		state = States.NOTHING_LOADED;
-//		state.enter();
+		state = States.NOTHING_LOADED;
+		state.enter();
 		setChanged();
 		notifyObservers();
-//		timer = new Timer(TICK, needs lambda);
-//		timer.start();
+		timer = new Timer(TICK, e -> {if(autoStepOn) step();});
+		timer.start();
 		frame.setVisible(true);
+	    frame.addWindowListener(WindowListenerFactory.windowClosingFactory(e -> exit()));
 	}
 	
 	 /**
@@ -155,4 +160,8 @@ public class MachineView extends Observable {
             }
         });
     }  
+    
+    public void step() {
+        model.step();
+    }
 }
