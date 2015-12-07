@@ -5,6 +5,7 @@ public class Code {
 	public static final int CODE_MAX = 256;
 	private int nextCodeLocation;
 	private long[] code = new long[CODE_MAX];
+	private int nextCodeIndex; 	
 	
 	
 	public void setCode(int op, int arg) {
@@ -30,11 +31,11 @@ public class Code {
 	}
 	
 	public void clear() {
-		for (int i = 0; i < code.length; i++) {
-			code[i] = 0;
-		}
-		nextCodeLocation = 0;
-	}
+        for(int i = 0; i < CODE_MAX; i++) {
+            code[i] = 0;
+        }
+        nextCodeIndex = 0;
+    }
 	
 	public String getText(int i) {
 		StringBuilder builder = new StringBuilder();
