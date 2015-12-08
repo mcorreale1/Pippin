@@ -111,6 +111,8 @@ public class Assembler {
 					//inputCode.remove(inputCode.size()-1);
 				}
 				
+				
+				
 				//Remove ENDCODE from arraylist
 				for (int j = 0; j < inputCode.size(); j++) {
 					if (inputCode.get(j).equalsIgnoreCase("ENDCODE")) {
@@ -181,7 +183,7 @@ public class Assembler {
 	
 	 public static void main(String[] args) {
 	        StringBuilder error = new StringBuilder();
-	        int i = assemble(new File("merge.pasm"), new File("mergeCompare.pexe"), error);
+	        int i = assemble(new File("merge.pasm"), new File("outputFile.pexe"), error);
 	        System.out.println(i + " " + error);
 	    }
 }
