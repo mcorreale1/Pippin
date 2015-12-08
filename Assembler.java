@@ -183,7 +183,7 @@ public class Assembler {
 	
 	 public static void main(String[] args) {
 	        StringBuilder error = new StringBuilder();
-	        int i = assemble(new File("07e.pasm"), new File("outputFile.pexe"), error);
+	        int i = assemble(new File("merge.pasm"), new File("outputFile.pexe"), error);
 	        System.out.println(i + " " + error);
 	    }
 }

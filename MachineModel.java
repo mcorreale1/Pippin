@@ -278,6 +278,7 @@ public class MachineModel extends Observable {
 	public void copy(int arg) {
 		 int args[] = {memory.getData(arg), memory.getData(arg+1), memory.getData(arg+2)};
 		 for(int i = 0; i < 2; i++) {
+			 //Might break it, probably not though
 			 if(args[i] >= arg && args[i] <= arg+ args[2]) {
 				 throw new IllegalArgumentException("Instruction would corrupt args");
 			 }
@@ -286,7 +287,7 @@ public class MachineModel extends Observable {
 			||	args[1] < 0 || args[1] > Memory.DATA_SIZE-1) {
 			 throw new ArrayIndexOutOfBoundsException("Source or target out of bounds");
 		 } 
-		 if(args[0] == args[1]) {
+		 if(args[0] == args[1] || args[2] == 0) {
 			 return;
 		 } else if(args[0] > args[1]) {
 			 for(int i = 0; i < args[2]; i++) {
