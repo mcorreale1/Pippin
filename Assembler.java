@@ -111,7 +111,9 @@ public class Assembler {
 				//Populate output code array
 				for(int i = 0; i< inputCode.size() && retVal == 0; i++) {
 					String[] parts = inputCode.get(i).split("\\s+");
-					if (!InstructionMap.opcode.containsKey(parts[0].toUpperCase())) {
+					if (parts[0].equals("ENDCODE")) {
+						outputCode.add("-1");
+					} else if (!InstructionMap.opcode.containsKey(parts[0].toUpperCase())) {
 						error.append("Error on line " + (i+1) + ": illegal mnemonic");
 					} else if(!(parts[0].equals(parts[0].toUpperCase()))) {
 						error.append("Error on line " + (i+1) + ": mnemonic must be upper case");
@@ -122,8 +124,6 @@ public class Assembler {
 						else {
 							outputCode.add(Integer.toString(InstructionMap.opcode.get(parts[0]), 16) + " 0");	
 						}
-					} else if (parts[0].equals("ENDCODE")) {
-						outputCode.add("-1");
 					} else 
 						if(parts.length > 2) {
 							error.append("Error on line " + (i+1) + ": this mnemonic has too many arguments");
