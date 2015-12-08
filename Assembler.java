@@ -100,34 +100,29 @@ public class Assembler {
 					} else {
 						inputCode.add(inputText.get(i));
 					}
-					if (inputText.get(i).equals("ENDCODE")) {
-						if(!(inputText.get(i).equalsIgnoreCase("ENDCODE"))) {
+					if (inputText.get(i).equalsIgnoreCase("ENDCODE")) {
+						if(!(inputText.get(i).equals("ENDCODE"))) {
 							error.append("Error on line "+ (i+1) + ": \"ENDCODE\" must be upper case");
 							retVal = i+1;
 						}
 						valuesAreCode = false;
 					}
-					
-					//inputCode.remove(inputCode.size()-1);
 				}
-				
-				//Remove ENDCODE from arraylist
-				for (int j = 0; j < inputCode.size(); j++) {
-					if (inputCode.get(j).equalsIgnoreCase("ENDCODE")) {
-						inputCode.remove(inputCode.get(j));
-					}
-				}
-				
 				//Populate output code array
 				for(int i = 0; i< inputCode.size() && retVal == 0; i++) {
 					String[] parts = inputCode.get(i).split("\\s+");
-					if (!InstructionMap.opcode.containsKey(parts[0].toUpperCase())) {
+					if (parts[0].equals("ENDCODE")) {
+						outputCode.add("-1");
+					} else if (!InstructionMap.opcode.containsKey(parts[0].toUpperCase())) {
 						error.append("Error on line " + (i+1) + ": illegal mnemonic");
+						retVal = i+1;
 					} else if(!(parts[0].equals(parts[0].toUpperCase()))) {
 						error.append("Error on line " + (i+1) + ": mnemonic must be upper case");
+						retVal = i+1;
 					} else if (noArgument.contains(parts[0])) {
 						if(parts.length > 1) {
 							error.append("Error on line " + (i+1) + ": this mnemonic cannot take arguments");
+							retVal = i+1;
 						}
 						else {
 							outputCode.add(Integer.toString(InstructionMap.opcode.get(parts[0]), 16) + " 0");	
@@ -135,23 +130,30 @@ public class Assembler {
 					} else 
 						if(parts.length > 2) {
 							error.append("Error on line " + (i+1) + ": this mnemonic has too many arguments");
+							retVal = i+1;
 						} else {
 						try {
 							int arg = Integer.parseInt(parts[1],16);
 							outputCode.add(Integer.toString(InstructionMap.opcode.get(parts[0]), 16) + " " + Integer.toString(arg, 16));
-						} catch(Error e) {
+						} catch(Exception e) {
 							error.append("Error on line " + (i+1) + ": argument is not a hex number");
+							retVal = i+1;
 						} 
 					}
 				}
 				for(int i = 0; i < inputData.size() && retVal == 0; i++) {
 					String[] parts = inputData.get(i).split("\\s+");
+					if (parts.length > 2) {
+						error.append("Error on line" + (outputCode.size() + i + 1) +": data has too many arguments");
+						retVal = outputCode.size() + i + 1;
+					}
 					try {
 						int arg = Integer.parseInt(parts[0],16);
 						int arg2 = Integer.parseInt(parts[1],16);
 						outputData.add(inputData.get(i));
-					} catch (Error e) {
-						error.append("Error on line " + (i+1) + ": argument is not a hex number");
+					} catch (Exception e) {
+						error.append("Error on line " + (outputCode.size() + i + 1) + ": argument is not a hex number");
+						retVal = outputCode.size() + i + 1;
 					}
 				}
 				if(retVal == 0) {
@@ -181,7 +183,7 @@ public class Assembler {
 	
 	 public static void main(String[] args) {
 	        StringBuilder error = new StringBuilder();
-	        int i = assemble(new File("merge.pasm"), new File("mergeCompare.pexe"), error);
+	        int i = assemble(new File("merge.pasm"), new File("outputFile.pexe"), error);
 	        System.out.println(i + " " + error);
 	    }
 }
