@@ -132,7 +132,7 @@ public class Assembler {
 						try {
 							int arg = Integer.parseInt(parts[1],16);
 							outputCode.add(Integer.toString(InstructionMap.opcode.get(parts[0]), 16) + " " + Integer.toString(arg, 16));
-						} catch(Error e) {
+						} catch(Exception e) {
 							error.append("Error on line " + (i+1) + ": argument is not a hex number");
 							retVal = i+1;
 						} 
@@ -144,8 +144,9 @@ public class Assembler {
 						int arg = Integer.parseInt(parts[0],16);
 						int arg2 = Integer.parseInt(parts[1],16);
 						outputData.add(inputData.get(i));
-					} catch (Error e) {
-						error.append("Error on line " + (i+1) + ": argument is not a hex number");
+					} catch (Exception e) {
+						error.append("Error on line " + (outputCode.size() + i + 1) + ": argument is not a hex number");
+						retVal = outputCode.size() + i + 1;
 					}
 				}
 				if(retVal == 0) {
@@ -175,7 +176,7 @@ public class Assembler {
 	
 	 public static void main(String[] args) {
 	        StringBuilder error = new StringBuilder();
-	        int i = assemble(new File("merge.pasm"), new File("outputFile.pexe"), error);
+	        int i = assemble(new File("22e.pasm"), new File("outputFile.pexe"), error);
 	        System.out.println(i + " " + error);
 	    }
 }
