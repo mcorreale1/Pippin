@@ -155,33 +155,48 @@ public class MachineView extends Observable {
 		frame.addWindowListener(WindowListenerFactory.windowClosingFactory(e -> exit()));
 	}
 
-	/**
-	 * Main method that drives the whole simulator
-	 * @param args command line arguments are not used
-	 */
-	public static void main(String[] args) {
-		javax.swing.SwingUtilities.invokeLater(new Runnable() {
-			public void run() {
-				new MachineView(new MachineModel()); 
-			}
-		});
-	}  
-
 	public void step() {
 		if(model.isRunning()) {
 			try {
 				model.step();
 			} catch (CodeAccessException e) {
-				catch (ArrayIndexOutOfBoundsException e) {
-					catch (NullPointerException e) {
-						catch (IllegalArgumentException e) {
-							catch (DivideByZeroException e) {
-							}
-						}
-					}
-				}
+				JOptionPane.showMessageDialog(
+						frame, 
+						"Program error from line " + getProgramCounter() + "\n"
+								+ "Exception message: " + e.getMessage(),
+								"Run time error",
+								JOptionPane.OK_OPTION);
+			} catch (ArrayIndexOutOfBoundsException e) {
+				JOptionPane.showMessageDialog(
+						frame, 
+						"Program error from line " + getProgramCounter() + "\n"
+								+ "Exception message: " + e.getMessage(),
+								"Run time error",
+								JOptionPane.OK_OPTION);
+			} catch (NullPointerException e) {
+				JOptionPane.showMessageDialog(
+						frame, 
+						"Program error from line " + getProgramCounter() + "\n"
+								+ "Exception message: " + e.getMessage(),
+								"Run time error",
+								JOptionPane.OK_OPTION);
+			} catch (IllegalArgumentException e) {
+				JOptionPane.showMessageDialog(
+						frame, 
+						"Program error from line " + getProgramCounter() + "\n"
+								+ "Exception message: " + e.getMessage(),
+								"Run time error",
+								JOptionPane.OK_OPTION);
+			} catch (DivideByZeroException e) {
+				JOptionPane.showMessageDialog(
+						frame, 
+						"Program error from line " + getProgramCounter() + "\n"
+								+ "Exception message: " + e.getMessage(),
+								"Run time error",
+								JOptionPane.OK_OPTION);
 			}
-		} else {
+		}
+		else {
 			halt();
 		}
 	}
@@ -217,6 +232,51 @@ public class MachineView extends Observable {
 	}
 
 	public void execute() {
+		while(running) {
+			if(model.isRunning()) {
+				try {
+					model.step();
+				} catch (CodeAccessException e) {
+					JOptionPane.showMessageDialog(
+							frame, 
+							"Program error from line " + getProgramCounter() + "\n"
+									+ "Exception message: " + e.getMessage(),
+									"Run time error",
+									JOptionPane.OK_OPTION);
+				} catch (ArrayIndexOutOfBoundsException e) {
+					JOptionPane.showMessageDialog(
+							frame, 
+							"Program error from line " + getProgramCounter() + "\n"
+									+ "Exception message: " + e.getMessage(),
+									"Run time error",
+									JOptionPane.OK_OPTION);
+				} catch (NullPointerException e) {
+					JOptionPane.showMessageDialog(
+							frame, 
+							"Program error from line " + getProgramCounter() + "\n"
+									+ "Exception message: " + e.getMessage(),
+									"Run time error",
+									JOptionPane.OK_OPTION);
+				} catch (IllegalArgumentException e) {
+					JOptionPane.showMessageDialog(
+							frame, 
+							"Program error from line " + getProgramCounter() + "\n"
+									+ "Exception message: " + e.getMessage(),
+									"Run time error",
+									JOptionPane.OK_OPTION);
+				} catch (DivideByZeroException e) {
+					JOptionPane.showMessageDialog(
+							frame, 
+							"Program error from line " + getProgramCounter() + "\n"
+									+ "Exception message: " + e.getMessage(),
+									"Run time error",
+									JOptionPane.OK_OPTION);
+				}
+			}
+			else {
+				halt();
+			}
+		} //Find setChanged() and notifyObservers() and put here
 	}
 
 	/**
@@ -366,7 +426,7 @@ public class MachineView extends Observable {
 		setChanged();
 		notifyObservers();
 	}
-	
+
 	void finalLoad_ReloadStep() {
 		clearAll();
 		String str = Loader.load(model, currentlyExecutingFile);
@@ -377,16 +437,31 @@ public class MachineView extends Observable {
 		notifyObservers("Load Code");
 		if (str != "success") {
 			JOptionPane.showMessageDialog(
-			        frame, 
-			        "The file being selected has problems.\n" +
-			        "Cannot load the program",
-			        "Warning",
-			        JOptionPane.OK_OPTION);
+					frame, 
+					"The file being selected has problems.\n" +
+							"Cannot load the program",
+							"Warning",
+							JOptionPane.OK_OPTION);
 		}
 	}
-	
+
 	void halt() {
 		setRunning(false);	
 	}
-
+	
+	public void setPeriod(int period) { 
+        timer.setDelay(period); 
+    }       
+	
+	/**
+	 * Main method that drives the whole simulator
+	 * @param args command line arguments are not used
+	 */
+	public static void main(String[] args) {
+		javax.swing.SwingUtilities.invokeLater(new Runnable() {
+			public void run() {
+				new MachineView(new MachineModel(true)); 
+			}
+		});
+	}  
 }

@@ -8,6 +8,7 @@ import java.util.Observer;
 import javax.swing.JButton;
 import javax.swing.JComponent;
 import javax.swing.JPanel;
+import javax.swing.JSlider;
 
 public class ControlPanel implements Observer {
 	private MachineView machineView;
@@ -38,6 +39,9 @@ public class ControlPanel implements Observer {
 		reloadButton.setBackground(Color.WHITE);
 		reloadButton.addActionListener(e -> machineView.reload());
 		returnPanel.add(reloadButton);
+		JSlider slider = new JSlider(5,1000);
+		returnPanel.add(slider);
+		//e -> machineView.setPeriod(slider.getValue());
 		return returnPanel;
 	}
 

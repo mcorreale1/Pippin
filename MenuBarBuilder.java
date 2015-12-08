@@ -22,6 +22,7 @@ public class MenuBarBuilder implements Observer {
 		machineView.addObserver(this);
 		assemble.addActionListener(e -> machineView.assembleFile());
 		load.addActionListener(e -> machineView.loadFile());
+		go.addActionListener(e -> machineView.execute());
 	}
 	
 	public JMenu createFileMenu() {
