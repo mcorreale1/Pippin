@@ -65,7 +65,7 @@ public class CopyTest {
 	 */
 	@Test
 	public void test2() {
-		setData(0, 1, 2);
+		setData(6, 1, 2);
 		in = model.get(0x1D);
 		boolean corrupted = false;
 		try {

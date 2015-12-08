@@ -195,6 +195,8 @@ public class MachineView extends Observable {
 								"Run time error",
 								JOptionPane.OK_OPTION);
 			}
+			setChanged();
+			notifyObservers();
 		}
 		else {
 			halt();
@@ -276,7 +278,8 @@ public class MachineView extends Observable {
 			else {
 				halt();
 			}
-		} //Find setChanged() and notifyObservers() and put here
+		} setChanged();
+		  notifyObservers();
 	}
 
 	/**

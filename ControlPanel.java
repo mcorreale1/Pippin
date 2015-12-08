@@ -41,7 +41,10 @@ public class ControlPanel implements Observer {
 		returnPanel.add(reloadButton);
 		JSlider slider = new JSlider(5,1000);
 		returnPanel.add(slider);
-		//e -> machineView.setPeriod(slider.getValue());
+		
+		//Not sure if correct way to add change listener
+		//slider.addChangeListener(new ChangeListener()e -> machineView.setPeriod(slider.getValue()));
+		slider.addChangeListener(e -> machineView.setPeriod(slider.getValue()));
 		return returnPanel;
 	}
 
