@@ -8,6 +8,7 @@ import java.util.Scanner;
 public class Loader {	
 
 	public static String load(MachineModel model, File file) {
+		if(model == null || file == null) return null;
 		try (Scanner input = new Scanner(file)) {
 			// body of the method goes here--the outline follows the expected output of the test main
 			boolean valuesAreCode = true;

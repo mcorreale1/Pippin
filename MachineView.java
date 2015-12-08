@@ -7,14 +7,18 @@ import java.awt.GridLayout;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.PrintWriter;
 import java.util.Observable;
 import java.util.Properties;
-import javax.swing.Timer;
 
+import javax.swing.JFileChooser;
 import javax.swing.JFrame;
 import javax.swing.JMenuBar;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
+import javax.swing.Timer;
+import javax.swing.filechooser.FileNameExtensionFilter;
 
 public class MachineView extends Observable {
 	private MachineModel model;
@@ -23,17 +27,19 @@ public class MachineView extends Observable {
 	private String executableDir;
 	private Properties properties = null;
 	private CodeViewPanel codeViewPanel;
-    private MemoryViewPanel memoryViewPanel1;
-    private MemoryViewPanel memoryViewPanel2;
-    private MemoryViewPanel memoryViewPanel3;
-    private ControlPanel controlPanel;
-    private ProcessorViewPanel processorPanel;
-    private MenuBarBuilder menuBuilder;
-    private JFrame frame;
-    private States state;
-    private static final int TICK = 500; // timer tick = 1/2 second
-    private boolean autoStepOn = false;
-    private Timer timer;
+	private MemoryViewPanel memoryViewPanel1;
+	private MemoryViewPanel memoryViewPanel2;
+	private MemoryViewPanel memoryViewPanel3;
+	private ControlPanel controlPanel;
+	private ProcessorViewPanel processorPanel;
+	private MenuBarBuilder menuBuilder;
+	private JFrame frame;
+	private States state;
+	private static final int TICK = 500; // timer tick = 1/2 second
+	private boolean autoStepOn = false;
+	private Timer timer;
+	private File currentlyExecutingFile = null;
+	private boolean running = false;
 
 	public int getChangedIndex() {
 		return model.getChangedIndex();
@@ -42,11 +48,11 @@ public class MachineView extends Observable {
 	public int getData(int index) {
 		return model.getData(index);
 	}
-	
+
 	public int getProgramCounter() {
 		return model.getProgramCounter();
 	}
-	
+
 	public int getAccumulator() {
 		return model.getAccumulator();
 	}
@@ -57,7 +63,7 @@ public class MachineView extends Observable {
 		loadPropertiesFile();
 		createAndShowGUI();
 	}
-	
+
 	private void locateDefaultDirectory() {
 		//CODE TO DISCOVER THE ECLIPSE DEFAULT DIRECTORY:
 		File temp = new File("propertyfile.txt");
@@ -79,7 +85,7 @@ public class MachineView extends Observable {
 		int lastSlash = defaultDir.lastIndexOf('/');
 		defaultDir  = defaultDir.substring(0, lastSlash + 1);
 	}
-	
+
 	private void loadPropertiesFile() {
 		try { // load properties file "propertyfile.txt", if it exists
 			properties = new Properties();
@@ -101,7 +107,7 @@ public class MachineView extends Observable {
 			executableDir = defaultDir;
 		}		
 	}
-	
+
 	/**
 	 * Method that sets up the whole GUI and locates the individual
 	 * components into place. Also sets up the Menu bar. Starts a 
@@ -146,22 +152,241 @@ public class MachineView extends Observable {
 		timer = new Timer(TICK, e -> {if(autoStepOn) step();});
 		timer.start();
 		frame.setVisible(true);
-	    frame.addWindowListener(WindowListenerFactory.windowClosingFactory(e -> exit()));
+		frame.addWindowListener(WindowListenerFactory.windowClosingFactory(e -> exit()));
+	}
+
+	/**
+	 * Main method that drives the whole simulator
+	 * @param args command line arguments are not used
+	 */
+	public static void main(String[] args) {
+		javax.swing.SwingUtilities.invokeLater(new Runnable() {
+			public void run() {
+				new MachineView(new MachineModel()); 
+			}
+		});
+	}  
+
+	public void step() {
+		if(model.isRunning()) {
+			try {
+				model.step();
+			} catch (CodeAccessException e) {
+				catch (ArrayIndexOutOfBoundsException e) {
+					catch (NullPointerException e) {
+						catch (IllegalArgumentException e) {
+							catch (DivideByZeroException e) {
+							}
+						}
+					}
+				}
+			}
+		} else {
+			halt();
+		}
+	}
+
+	public void exit() { // method executed when user exits the program
+		int decision = JOptionPane.showConfirmDialog(
+				frame, "Do you really wish to exit?",
+				"Confirmation", JOptionPane.YES_NO_OPTION);
+		if (decision == JOptionPane.YES_OPTION) {
+			System.exit(0);
+		}
+	}
+
+	public States getState() {
+		return state;
+	}
+
+	public void clearAll() {
+		model.clear();
+		state = States.NOTHING_LOADED;
+		state.enter();
+		setChanged();
+		notifyObservers("Clear");
+	}
+
+	public void toggleAutoStep() {
+		setAutoStepOn(!autoStepOn);
+	}
+
+	public void reload() {
+		clearAll();
+		finalLoad_ReloadStep();
+	}
+
+	public void execute() {
+	}
+
+	/**
+	 * Translate method reads a source "pasm" file and saves the
+	 * file with the extension "pexe" by collecting the input and output
+	 * files and calling Assembler.assemble. If the source has errors 
+	 * 
+	 */
+	public void assembleFile() {
+		File source = null;
+		File outputExe = null;
+		JFileChooser chooser = new JFileChooser(sourceDir);
+		FileNameExtensionFilter filter = new FileNameExtensionFilter(
+				"Pippin Source Files", "pasm");
+		chooser.setFileFilter(filter);
+		// CODE TO LOAD DESIRED FILE
+		int openOK = chooser.showOpenDialog(null);
+		if(openOK == JFileChooser.APPROVE_OPTION) {
+			source = chooser.getSelectedFile();
+		}
+		if(source != null && source.exists()) {
+			// CODE TO REMEMBER WHICH DIRECTORY HAS THE pexe FILES
+			// WHICH WE WILL ALLOW TO BE DIFFERENT
+			sourceDir = source.getAbsolutePath();
+			sourceDir = sourceDir.replace('\\','/');
+			int lastDot = sourceDir.lastIndexOf('.');
+			String outName = sourceDir.substring(0, lastDot + 1) + "pexe";			
+			int lastSlash = sourceDir.lastIndexOf('/');
+			sourceDir = sourceDir.substring(0, lastSlash + 1);
+			outName = outName.substring(lastSlash+1); 
+			filter = new FileNameExtensionFilter(
+					"Pippin Executable Files", "pexe");
+			if(executableDir.equals(defaultDir)) {
+				chooser = new JFileChooser(sourceDir);
+			} else {
+				chooser = new JFileChooser(executableDir);
+			}
+			chooser.setFileFilter(filter);
+			chooser.setSelectedFile(new File(outName));
+			int saveOK = chooser.showSaveDialog(null);
+			if(saveOK == JFileChooser.APPROVE_OPTION) {
+				outputExe = chooser.getSelectedFile();
+			}
+			if(outputExe != null) {
+				executableDir = outputExe.getAbsolutePath();
+				executableDir = executableDir.replace('\\','/');
+				lastSlash = executableDir.lastIndexOf('/');
+				executableDir = executableDir.substring(0, lastSlash + 1);
+				try { 
+					properties.setProperty("SourceDirectory", sourceDir);
+					properties.setProperty("ExecutableDirectory", executableDir);
+					properties.store(new FileOutputStream("propertyfile.txt"), 
+							"File locations");
+				} catch (Exception e) {
+					System.out.println("Error writing properties file");
+				}
+				StringBuilder builder = new StringBuilder();
+				int ret = Assembler.assemble(source, outputExe, builder); 
+				if (ret == 0) {
+					JOptionPane.showMessageDialog(
+							frame, 
+							"The source was assembled to an executable",
+							"Success",
+							JOptionPane.INFORMATION_MESSAGE);
+				} else {
+					JOptionPane.showMessageDialog(
+							frame, 
+							builder.toString(),
+							"Failure on line " + ret,
+							JOptionPane.INFORMATION_MESSAGE);
+				}
+			} else {// outputExe Still null
+				JOptionPane.showMessageDialog(
+						frame, 
+						"The output file has problems.\n" +
+								"Cannot assemble the program",
+								"Warning",
+								JOptionPane.OK_OPTION);
+			}
+		} else {// source file does not exist
+			JOptionPane.showMessageDialog(
+					frame, 
+					"The source file has problems.\n" +
+							"Cannot assemble the program",
+							"Warning",
+							JOptionPane.OK_OPTION);				
+		}
+	}
+
+	public void loadFile() {
+		JFileChooser chooser = new JFileChooser(executableDir);
+		FileNameExtensionFilter filter = new FileNameExtensionFilter(
+				"Pippin Executable Files", "pexe");
+		chooser.setFileFilter(filter);
+		// CODE TO LOAD DESIRED FILE
+		int openOK = chooser.showOpenDialog(null);
+		if(openOK == JFileChooser.APPROVE_OPTION) {
+			currentlyExecutingFile = chooser.getSelectedFile();
+		}
+		if(currentlyExecutingFile != null && currentlyExecutingFile.exists()) {
+			// CODE TO REMEMBER WHICH DIRECTORY HAS THE pexe FILES
+			executableDir = currentlyExecutingFile .getAbsolutePath();
+			executableDir = executableDir.replace('\\','/');
+			int lastSlash = executableDir.lastIndexOf('/');
+			executableDir = executableDir.substring(0, lastSlash + 1);
+			try { 
+				properties.setProperty("SourceDirectory", sourceDir);
+				properties.setProperty("ExecutableDirectory", executableDir);
+				properties.store(new FileOutputStream("propertyfile.txt"), 
+						"File locations");
+			} catch (Exception e) {
+				System.out.println("Error writing properties file");
+			}			
+		}
+		finalLoad_ReloadStep();
+	}		
+
+	Code getCode() {
+		return model.getCode();
+	}
+
+	public void setRunning(boolean b) {
+		running = b;
+		if(running) {
+			state = States.PROGRAM_LOADED_NOT_AUTOSTEPPING;
+		} else {
+			autoStepOn = false;
+			state = States.PROGRAM_HALTED;
+		}
+		state.enter();
+		setChanged();
+		notifyObservers();          
+	}
+
+	public boolean isAutoStepOn() {
+		return autoStepOn;
+	}
+
+	public void setAutoStepOn(boolean b) {
+		autoStepOn = b;
+		if(autoStepOn) {
+			state = States.AUTO_STEPPING;
+		} else {
+			state = States.PROGRAM_LOADED_NOT_AUTOSTEPPING;
+		}
+		state.enter();
+		setChanged();
+		notifyObservers();
 	}
 	
-	 /**
-     * Main method that drives the whole simulator
-     * @param args command line arguments are not used
-     */
-    public static void main(String[] args) {
-        javax.swing.SwingUtilities.invokeLater(new Runnable() {
-            public void run() {
-                new MachineView(new MachineModel()); 
-            }
-        });
-    }  
-    
-    public void step() {
-        model.step();
-    }
+	void finalLoad_ReloadStep() {
+		clearAll();
+		String str = Loader.load(model, currentlyExecutingFile);
+		model.setRunning(true);
+		setRunning(true);
+		setAutoStepOn(false);
+		setChanged();
+		notifyObservers("Load Code");
+		if (str != "success") {
+			JOptionPane.showMessageDialog(
+			        frame, 
+			        "The file being selected has problems.\n" +
+			        "Cannot load the program",
+			        "Warning",
+			        JOptionPane.OK_OPTION);
+		}
+	}
+	
+	void halt() {
+		setRunning(false);	
+	}
+
 }

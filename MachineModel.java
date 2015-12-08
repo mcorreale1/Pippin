@@ -11,6 +11,7 @@ public class MachineModel extends Observable {
 	private Memory memory = new Memory();
 	private boolean withGUI = false;
 	private Code code = new Code();
+	private boolean running = false;
 
 	public MachineModel() {
 		this(false);
@@ -249,7 +250,7 @@ public class MachineModel extends Observable {
 	}
 	void halt() {
 		if(withGUI) {
-			//code to come here later
+			running = false;
 		} else {
 			System.exit(0);
 		}
@@ -305,7 +306,17 @@ public class MachineModel extends Observable {
 		private int programCounter;
 	}
 	
-	public void step(){}
+	public void step() {
+		try {
+			int pc  = cpu.programCounter;
+			int opcode = code.getOp(pc);
+			int arg = code.getArg(pc);
+			get(opcode).execute(arg);
+		} catch(Exception e){
+			halt( ); throw e;
+		};
+		
+	}
 	
 	public void clear() {
 		Memory m = new Memory();
@@ -313,4 +324,17 @@ public class MachineModel extends Observable {
 		cpu.accumulator = 0;
 		cpu.programCounter = 0;
 	}
+
+	public boolean isRunning() {
+		return running;
+	}
+
+	public void setRunning(boolean running) {
+		this.running = running;
+	}
+	
+	public Instruction get(Integer key) {
+        return INSTRUCTIONS.get(key);
+    }
+
 }

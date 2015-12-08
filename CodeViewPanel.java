@@ -67,6 +67,7 @@ public class CodeViewPanel implements Observer {
 			codeText[previousColor].setBackground(Color.YELLOW);
 		}	
 		if(arg1 != null && arg1.equals("Clear")) {
+			code = machineView.getCode();
 			for(int i = 0; i < Code.CODE_MAX; i++) {
 				codeText[i].setText("");
 			}	

@@ -20,6 +20,8 @@ public class MenuBarBuilder implements Observer {
 	public MenuBarBuilder(MachineView machineView) {
 		this.machineView = machineView;
 		machineView.addObserver(this);
+		assemble.addActionListener(e -> machineView.assembleFile());
+		load.addActionListener(e -> machineView.loadFile());
 	}
 	
 	public JMenu createFileMenu() {
@@ -28,18 +30,18 @@ public class MenuBarBuilder implements Observer {
 		assemble.setMnemonic(KeyEvent.VK_A);
 		assemble.setAccelerator(KeyStroke.getKeyStroke(
 				KeyEvent.VK_A, ActionEvent.CTRL_MASK));
-//		assemble.addActionListener(e -> machineView.assembleFile());
+		assemble.addActionListener(e -> machineView.assembleFile());
 		returnMenu.add(assemble);
 		load.setMnemonic(KeyEvent.VK_L);
 		load.setAccelerator(KeyStroke.getKeyStroke(
 				KeyEvent.VK_L, ActionEvent.CTRL_MASK));
-//		load.addActionListener(e -> machineView.loadFile());
+		load.addActionListener(e -> machineView.loadFile());
 		returnMenu.add(load);
 		returnMenu.addSeparator(); // puts a line across the menu
 		exit.setMnemonic(KeyEvent.VK_E);
 		exit.setAccelerator(KeyStroke.getKeyStroke(
 				KeyEvent.VK_E, ActionEvent.CTRL_MASK));
-//		exit.addActionListener(e -> machineView.exit());
+		exit.addActionListener(e -> machineView.exit());
 		returnMenu.add(exit);
 		
 		return returnMenu;
@@ -51,15 +53,15 @@ public class MenuBarBuilder implements Observer {
 		go.setMnemonic(KeyEvent.VK_G);
 		go.setAccelerator(KeyStroke.getKeyStroke(
 				KeyEvent.VK_G, ActionEvent.CTRL_MASK));
-//		go.addActionListener(e -> machineView.execute());
+		go.addActionListener(e -> machineView.execute());
 		menu.add(go);
 		return menu;
 	}
 
 	@Override
 	public void update(Observable arg0, Object arg1) {
-//		assemble.setEnabled(machineView.getState().getAssembleFileActive());
-//		load.setEnabled(machineView.getState().getLoadFileActive());
-//		go.setEnabled(machineView.getState().getStepActive());
+		assemble.setEnabled(machineView.getState().getAssembleFileActive());
+		load.setEnabled(machineView.getState().getLoadFileActive());
+		go.setEnabled(machineView.getState().getStepActive());
 	}	
 }
