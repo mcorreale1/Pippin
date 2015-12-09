@@ -120,7 +120,7 @@ public class MachineView extends Observable {
 		memoryViewPanel3 = new MemoryViewPanel(this, 240, Memory.DATA_SIZE);
 		controlPanel = new ControlPanel(this);
 		//processorPanel = new ProcessorViewPanel(this);
-		processorPanel = new ProcessorViewPanel();
+		processorPanel = new ProcessorViewPanel(this);
 		menuBuilder = new MenuBarBuilder(this);
 		frame = new JFrame("Pippin Simulator");
 		Container content = frame.getContentPane();

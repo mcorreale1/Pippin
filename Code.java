@@ -34,7 +34,7 @@ public class Code {
         for(int i = 0; i < CODE_MAX; i++) {
             code[i] = 0;
         }
-        nextCodeIndex = 0;
+        nextCodeLocation = 0;
     }
 	
 	public String getText(int i) {

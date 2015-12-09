@@ -3,6 +3,7 @@ package pippin;
 import java.awt.GridLayout;
 import java.util.Observable;
 import java.util.Observer;
+
 import javax.swing.JComponent;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
@@ -14,7 +15,7 @@ public class ProcessorViewPanel implements Observer{
 	private JTextField acc = new JTextField();
 	private JTextField pc = new JTextField();
 
-	public ProcessorViewPanel() {
+	public ProcessorViewPanel(MachineView machineView) {
 		this.machineView = machineView;
         machineView.addObserver(this);
 	}
