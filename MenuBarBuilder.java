@@ -20,9 +20,7 @@ public class MenuBarBuilder implements Observer {
 	public MenuBarBuilder(MachineView machineView) {
 		this.machineView = machineView;
 		machineView.addObserver(this);
-		assemble.addActionListener(e -> machineView.assembleFile());
-		load.addActionListener(e -> machineView.loadFile());
-		go.addActionListener(e -> machineView.execute());
+
 	}
 	
 	public JMenu createFileMenu() {
