@@ -21,7 +21,7 @@ public class MemoryViewPanel implements Observer{
 
 	private MachineView machineView;
 	private JScrollPane scroller;
-	private JTextField[] dataDecimal;
+	private JTextField[] dataDecimal = new JTextField[Memory.DATA_SIZE];
 	private JTextField[] dataHex = new JTextField[Memory.DATA_SIZE];
 	private int lower = -1;
 	private int upper = -1;
