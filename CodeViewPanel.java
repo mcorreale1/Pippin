@@ -59,8 +59,12 @@ public class CodeViewPanel implements Observer {
 	
 	@Override
 	public void update(Observable arg0, Object arg1) {
-		if(arg1 != null && arg1.equals("Load Code")) {
-			for(int i = 0; i < Code.CODE_MAX; i++) {
+//		if(arg1 != null && arg1.equals("Load Code")) {
+//			for(int i = 0; i < Code.CODE_MAX; i++) {
+	    if(arg1 != null && arg1.equals("Load Code")) {
+	        code = machineView.getCode();
+	        System.out.println('a');
+	        for(int i = 0; i < Code.CODE_MAX; i++) {
 				codeText[i].setText(code.getText(i));
 			}	
 			previousColor = machineView.getProgramCounter();			

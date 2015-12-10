@@ -65,9 +65,9 @@ public class MachineView extends Observable {
 	}
 
 	private void locateDefaultDirectory() {
-		//CODE TO DISCOVER THE ECLIPSE DEFAULT DIRECTORY:
+		// CODE TO DISCOVER THE ECLIPSE DEFAULT DIRECTORY:
 		File temp = new File("propertyfile.txt");
-		if(!temp.exists()) {
+		if (!temp.exists()) {
 			PrintWriter out;
 			try {
 				out = new PrintWriter(temp);
@@ -81,9 +81,9 @@ public class MachineView extends Observable {
 			defaultDir = temp.getAbsolutePath();
 		}
 		// change to forward slashes
-		defaultDir = defaultDir.replace('\\','/');
+		defaultDir = defaultDir.replace('\\', '/');
 		int lastSlash = defaultDir.lastIndexOf('/');
-		defaultDir  = defaultDir.substring(0, lastSlash + 1);
+		defaultDir = defaultDir.substring(0, lastSlash + 1);
 	}
 
 	private void loadPropertiesFile() {
@@ -93,25 +93,22 @@ public class MachineView extends Observable {
 			sourceDir = properties.getProperty("SourceDirectory");
 			executableDir = properties.getProperty("ExecutableDirectory");
 			// CLEAN UP ANY ERRORS IN WHAT IS STORED:
-			if (sourceDir == null || sourceDir.length() == 0 
-					|| !new File(sourceDir).exists()) {
+			if (sourceDir == null || sourceDir.length() == 0 || !new File(sourceDir).exists()) {
 				sourceDir = defaultDir;
 			}
-			if (executableDir == null || executableDir.length() == 0 
-					|| !new File(executableDir).exists()) {
+			if (executableDir == null || executableDir.length() == 0 || !new File(executableDir).exists()) {
 				executableDir = defaultDir;
 			}
 		} catch (Exception e) {
 			// PROPERTIES FILE DID NOT EXIST
 			sourceDir = defaultDir;
 			executableDir = defaultDir;
-		}		
+		}
 	}
 
 	/**
-	 * Method that sets up the whole GUI and locates the individual
-	 * components into place. Also sets up the Menu bar. Starts a 
-	 * swing timer ticking.
+	 * Method that sets up the whole GUI and locates the individual components
+	 * into place. Also sets up the Menu bar. Starts a swing timer ticking.
 	 */
 	private void createAndShowGUI() {
 		codeViewPanel = new CodeViewPanel(this);
@@ -119,24 +116,24 @@ public class MachineView extends Observable {
 		memoryViewPanel2 = new MemoryViewPanel(this, 160, 240);
 		memoryViewPanel3 = new MemoryViewPanel(this, 240, Memory.DATA_SIZE);
 		controlPanel = new ControlPanel(this);
-		//processorPanel = new ProcessorViewPanel(this);
+		// processorPanel = new ProcessorViewPanel(this);
 		processorPanel = new ProcessorViewPanel(this);
 		menuBuilder = new MenuBarBuilder(this);
 		frame = new JFrame("Pippin Simulator");
 		Container content = frame.getContentPane();
-		content.setLayout(new BorderLayout(1,1));
+		content.setLayout(new BorderLayout(1, 1));
 		content.setBackground(Color.BLACK);
-		frame.setSize(1200,600);
+		frame.setSize(1200, 600);
 		JPanel center = new JPanel();
-		center.setLayout(new GridLayout(1,3));
+		center.setLayout(new GridLayout(1, 3));
 
-		frame.add(codeViewPanel.createCodeDisplay(),BorderLayout.LINE_START);
-		frame.add(center,BorderLayout.CENTER);
+		frame.add(codeViewPanel.createCodeDisplay(), BorderLayout.LINE_START);
+		frame.add(center, BorderLayout.CENTER);
 		center.add(memoryViewPanel1.createMemoryDisplay());
 		center.add(memoryViewPanel2.createMemoryDisplay());
 		center.add(memoryViewPanel3.createMemoryDisplay());
-		frame.add(controlPanel.createControlDisplay(),BorderLayout.PAGE_END);
-		frame.add(processorPanel.createProcessorDisplay(),BorderLayout.PAGE_START);
+		frame.add(controlPanel.createControlDisplay(), BorderLayout.PAGE_END);
+		frame.add(processorPanel.createProcessorDisplay(), BorderLayout.PAGE_START);
 
 		JMenuBar bar = new JMenuBar();
 		frame.setJMenuBar(bar);
@@ -149,64 +146,45 @@ public class MachineView extends Observable {
 		state.enter();
 		setChanged();
 		notifyObservers();
-		timer = new Timer(TICK, e -> {if(autoStepOn) step();});
+		timer = new Timer(TICK, e -> {
+			if (autoStepOn)
+				step();
+		});
 		timer.start();
 		frame.setVisible(true);
 		frame.addWindowListener(WindowListenerFactory.windowClosingFactory(e -> exit()));
 	}
 
 	public void step() {
-		if(model.isRunning()) {
+		if (model.isRunning()) {
 			try {
 				model.step();
 			} catch (CodeAccessException e) {
-				JOptionPane.showMessageDialog(
-						frame, 
-						"Program error from line " + getProgramCounter() + "\n"
-								+ "Exception message: " + e.getMessage(),
-								"Run time error",
-								JOptionPane.OK_OPTION);
+				JOptionPane.showMessageDialog(frame, "Program error from line " + getProgramCounter() + "\n"
+						+ "Exception message: " + e.getMessage(), "Run time error", JOptionPane.OK_OPTION);
 			} catch (ArrayIndexOutOfBoundsException e) {
-				JOptionPane.showMessageDialog(
-						frame, 
-						"Program error from line " + getProgramCounter() + "\n"
-								+ "Exception message: " + e.getMessage(),
-								"Run time error",
-								JOptionPane.OK_OPTION);
+				JOptionPane.showMessageDialog(frame, "Program error from line " + getProgramCounter() + "\n"
+						+ "Exception message: " + e.getMessage(), "Run time error", JOptionPane.OK_OPTION);
 			} catch (NullPointerException e) {
-				JOptionPane.showMessageDialog(
-						frame, 
-						"Program error from line " + getProgramCounter() + "\n"
-								+ "Exception message: " + e.getMessage(),
-								"Run time error",
-								JOptionPane.OK_OPTION);
+				JOptionPane.showMessageDialog(frame, "Program error from line " + getProgramCounter() + "\n"
+						+ "Exception message: " + e.getMessage(), "Run time error", JOptionPane.OK_OPTION);
 			} catch (IllegalArgumentException e) {
-				JOptionPane.showMessageDialog(
-						frame, 
-						"Program error from line " + getProgramCounter() + "\n"
-								+ "Exception message: " + e.getMessage(),
-								"Run time error",
-								JOptionPane.OK_OPTION);
+				JOptionPane.showMessageDialog(frame, "Program error from line " + getProgramCounter() + "\n"
+						+ "Exception message: " + e.getMessage(), "Run time error", JOptionPane.OK_OPTION);
 			} catch (DivideByZeroException e) {
-				JOptionPane.showMessageDialog(
-						frame, 
-						"Program error from line " + getProgramCounter() + "\n"
-								+ "Exception message: " + e.getMessage(),
-								"Run time error",
-								JOptionPane.OK_OPTION);
+				JOptionPane.showMessageDialog(frame, "Program error from line " + getProgramCounter() + "\n"
+						+ "Exception message: " + e.getMessage(), "Run time error", JOptionPane.OK_OPTION);
 			}
 			setChanged();
 			notifyObservers();
-		}
-		else {
+		} else {
 			halt();
 		}
 	}
 
 	public void exit() { // method executed when user exits the program
-		int decision = JOptionPane.showConfirmDialog(
-				frame, "Do you really wish to exit?",
-				"Confirmation", JOptionPane.YES_NO_OPTION);
+		int decision = JOptionPane.showConfirmDialog(frame, "Do you really wish to exit?", "Confirmation",
+				JOptionPane.YES_NO_OPTION);
 		if (decision == JOptionPane.YES_OPTION) {
 			System.exit(0);
 		}
@@ -222,6 +200,7 @@ public class MachineView extends Observable {
 		state.enter();
 		setChanged();
 		notifyObservers("Clear");
+		System.out.println(countObservers());
 	}
 
 	public void toggleAutoStep() {
@@ -234,85 +213,63 @@ public class MachineView extends Observable {
 	}
 
 	public void execute() {
-		while(running) {
-			if(model.isRunning()) {
+		while (running) {
+			if (model.isRunning()) {
 				try {
 					model.step();
 				} catch (CodeAccessException e) {
-					JOptionPane.showMessageDialog(
-							frame, 
-							"Program error from line " + getProgramCounter() + "\n"
-									+ "Exception message: " + e.getMessage(),
-									"Run time error",
-									JOptionPane.OK_OPTION);
+					JOptionPane.showMessageDialog(frame, "Program error from line " + getProgramCounter() + "\n"
+							+ "Exception message: " + e.getMessage(), "Run time error", JOptionPane.OK_OPTION);
 				} catch (ArrayIndexOutOfBoundsException e) {
-					JOptionPane.showMessageDialog(
-							frame, 
-							"Program error from line " + getProgramCounter() + "\n"
-									+ "Exception message: " + e.getMessage(),
-									"Run time error",
-									JOptionPane.OK_OPTION);
+					JOptionPane.showMessageDialog(frame, "Program error from line " + getProgramCounter() + "\n"
+							+ "Exception message: " + e.getMessage(), "Run time error", JOptionPane.OK_OPTION);
 				} catch (NullPointerException e) {
-					JOptionPane.showMessageDialog(
-							frame, 
-							"Program error from line " + getProgramCounter() + "\n"
-									+ "Exception message: " + e.getMessage(),
-									"Run time error",
-									JOptionPane.OK_OPTION);
+					JOptionPane.showMessageDialog(frame, "Program error from line " + getProgramCounter() + "\n"
+							+ "Exception message: " + e.getMessage(), "Run time error", JOptionPane.OK_OPTION);
 				} catch (IllegalArgumentException e) {
-					JOptionPane.showMessageDialog(
-							frame, 
-							"Program error from line " + getProgramCounter() + "\n"
-									+ "Exception message: " + e.getMessage(),
-									"Run time error",
-									JOptionPane.OK_OPTION);
+					JOptionPane.showMessageDialog(frame, "Program error from line " + getProgramCounter() + "\n"
+							+ "Exception message: " + e.getMessage(), "Run time error", JOptionPane.OK_OPTION);
 				} catch (DivideByZeroException e) {
-					JOptionPane.showMessageDialog(
-							frame, 
-							"Program error from line " + getProgramCounter() + "\n"
-									+ "Exception message: " + e.getMessage(),
-									"Run time error",
-									JOptionPane.OK_OPTION);
+					JOptionPane.showMessageDialog(frame, "Program error from line " + getProgramCounter() + "\n"
+							+ "Exception message: " + e.getMessage(), "Run time error", JOptionPane.OK_OPTION);
 				}
-			}
-			else {
+			} else {
 				halt();
 			}
-		} setChanged();
-		  notifyObservers();
+		}
+		setChanged();
+		notifyObservers();
 	}
 
 	/**
-	 * Translate method reads a source "pasm" file and saves the
-	 * file with the extension "pexe" by collecting the input and output
-	 * files and calling Assembler.assemble. If the source has errors 
+	 * Translate method reads a source "pasm" file and saves the file with the
+	 * extension "pexe" by collecting the input and output files and calling
+	 * Assembler.assemble. If the source has errors
 	 * 
 	 */
 	public void assembleFile() {
 		File source = null;
 		File outputExe = null;
 		JFileChooser chooser = new JFileChooser(sourceDir);
-		FileNameExtensionFilter filter = new FileNameExtensionFilter(
-				"Pippin Source Files", "pasm");
+		FileNameExtensionFilter filter = new FileNameExtensionFilter("Pippin Source Files", "pasm");
 		chooser.setFileFilter(filter);
 		// CODE TO LOAD DESIRED FILE
 		int openOK = chooser.showOpenDialog(null);
-		if(openOK == JFileChooser.APPROVE_OPTION) {
+		if (openOK == JFileChooser.APPROVE_OPTION) {
 			source = chooser.getSelectedFile();
 		}
-		if(source != null && source.exists()) {
+		if (source != null && source.exists()) {
 			// CODE TO REMEMBER WHICH DIRECTORY HAS THE pexe FILES
 			// WHICH WE WILL ALLOW TO BE DIFFERENT
 			sourceDir = source.getAbsolutePath();
-			sourceDir = sourceDir.replace('\\','/');
+			sourceDir = sourceDir.replace('\\', '/');
 			int lastDot = sourceDir.lastIndexOf('.');
-			String outName = sourceDir.substring(0, lastDot + 1) + "pexe";			
+			String outName = sourceDir.substring(0, lastDot + 1) + "pexe";
 			int lastSlash = sourceDir.lastIndexOf('/');
 			sourceDir = sourceDir.substring(0, lastSlash + 1);
-			outName = outName.substring(lastSlash+1); 
-			filter = new FileNameExtensionFilter(
-					"Pippin Executable Files", "pexe");
-			if(executableDir.equals(defaultDir)) {
+			outName = outName.substring(lastSlash + 1);
+			filter = new FileNameExtensionFilter("Pippin Executable Files", "pexe");
+			if (executableDir.equals(defaultDir)) {
 				chooser = new JFileChooser(sourceDir);
 			} else {
 				chooser = new JFileChooser(executableDir);
@@ -320,82 +277,66 @@ public class MachineView extends Observable {
 			chooser.setFileFilter(filter);
 			chooser.setSelectedFile(new File(outName));
 			int saveOK = chooser.showSaveDialog(null);
-			if(saveOK == JFileChooser.APPROVE_OPTION) {
+			if (saveOK == JFileChooser.APPROVE_OPTION) {
 				outputExe = chooser.getSelectedFile();
 			}
-			if(outputExe != null) {
+			if (outputExe != null) {
 				executableDir = outputExe.getAbsolutePath();
-				executableDir = executableDir.replace('\\','/');
+				executableDir = executableDir.replace('\\', '/');
 				lastSlash = executableDir.lastIndexOf('/');
 				executableDir = executableDir.substring(0, lastSlash + 1);
-				try { 
+				try {
 					properties.setProperty("SourceDirectory", sourceDir);
 					properties.setProperty("ExecutableDirectory", executableDir);
-					properties.store(new FileOutputStream("propertyfile.txt"), 
-							"File locations");
+					properties.store(new FileOutputStream("propertyfile.txt"), "File locations");
 				} catch (Exception e) {
 					System.out.println("Error writing properties file");
 				}
 				StringBuilder builder = new StringBuilder();
-				int ret = Assembler.assemble(source, outputExe, builder); 
+				int ret = Assembler.assemble(source, outputExe, builder);
 				if (ret == 0) {
-					JOptionPane.showMessageDialog(
-							frame, 
-							"The source was assembled to an executable",
-							"Success",
+					JOptionPane.showMessageDialog(frame, "The source was assembled to an executable", "Success",
 							JOptionPane.INFORMATION_MESSAGE);
 				} else {
-					JOptionPane.showMessageDialog(
-							frame, 
-							builder.toString(),
-							"Failure on line " + ret,
+					JOptionPane.showMessageDialog(frame, builder.toString(), "Failure on line " + ret,
 							JOptionPane.INFORMATION_MESSAGE);
 				}
 			} else {// outputExe Still null
-				JOptionPane.showMessageDialog(
-						frame, 
-						"The output file has problems.\n" +
-								"Cannot assemble the program",
-								"Warning",
-								JOptionPane.OK_OPTION);
+				JOptionPane.showMessageDialog(frame, "The output file has problems.\n" + "Cannot assemble the program",
+						"Warning", JOptionPane.OK_OPTION);
 			}
 		} else {// source file does not exist
-			JOptionPane.showMessageDialog(
-					frame, 
-					"The source file has problems.\n" +
-							"Cannot assemble the program",
-							"Warning",
-							JOptionPane.OK_OPTION);				
+			JOptionPane.showMessageDialog(frame, "The source file has problems.\n" + "Cannot assemble the program",
+					"Warning", JOptionPane.OK_OPTION);
 		}
 	}
 
 	public void loadFile() {
 		JFileChooser chooser = new JFileChooser(executableDir);
-		FileNameExtensionFilter filter = new FileNameExtensionFilter(
-				"Pippin Executable Files", "pexe");
+		FileNameExtensionFilter filter = new FileNameExtensionFilter("Pippin Executable Files", "pexe");
 		chooser.setFileFilter(filter);
 		// CODE TO LOAD DESIRED FILE
 		int openOK = chooser.showOpenDialog(null);
-		if(openOK == JFileChooser.APPROVE_OPTION) {
+		if (openOK == JFileChooser.APPROVE_OPTION) {
 			currentlyExecutingFile = chooser.getSelectedFile();
 		}
-		if(currentlyExecutingFile != null && currentlyExecutingFile.exists()) {
+		System.out.println(currentlyExecutingFile);
+		if (currentlyExecutingFile != null && currentlyExecutingFile.exists()) {
 			// CODE TO REMEMBER WHICH DIRECTORY HAS THE pexe FILES
-			executableDir = currentlyExecutingFile .getAbsolutePath();
-			executableDir = executableDir.replace('\\','/');
+			executableDir = currentlyExecutingFile.getAbsolutePath();
+			executableDir = executableDir.replace('\\', '/');
 			int lastSlash = executableDir.lastIndexOf('/');
 			executableDir = executableDir.substring(0, lastSlash + 1);
-			try { 
+			try {
 				properties.setProperty("SourceDirectory", sourceDir);
 				properties.setProperty("ExecutableDirectory", executableDir);
-				properties.store(new FileOutputStream("propertyfile.txt"), 
-						"File locations");
+				properties.store(new FileOutputStream("propertyfile.txt"), "File locations");
 			} catch (Exception e) {
 				System.out.println("Error writing properties file");
-			}			
+			}
 		}
 		finalLoad_ReloadStep();
-	}		
+	}
 
 	Code getCode() {
 		return model.getCode();
@@ -403,7 +344,7 @@ public class MachineView extends Observable {
 
 	public void setRunning(boolean b) {
 		running = b;
-		if(running) {
+		if (running) {
 			state = States.PROGRAM_LOADED_NOT_AUTOSTEPPING;
 		} else {
 			autoStepOn = false;
@@ -411,7 +352,7 @@ public class MachineView extends Observable {
 		}
 		state.enter();
 		setChanged();
-		notifyObservers();          
+		notifyObservers();
 	}
 
 	public boolean isAutoStepOn() {
@@ -420,7 +361,7 @@ public class MachineView extends Observable {
 
 	public void setAutoStepOn(boolean b) {
 		autoStepOn = b;
-		if(autoStepOn) {
+		if (autoStepOn) {
 			state = States.AUTO_STEPPING;
 		} else {
 			state = States.PROGRAM_LOADED_NOT_AUTOSTEPPING;
@@ -439,32 +380,30 @@ public class MachineView extends Observable {
 		setChanged();
 		notifyObservers("Load Code");
 		if (str != "success") {
-			JOptionPane.showMessageDialog(
-					frame, 
-					"The file being selected has problems.\n" +
-							"Cannot load the program",
-							"Warning",
-							JOptionPane.OK_OPTION);
+			JOptionPane.showMessageDialog(frame, "The file being selected has problems.\n" + "Cannot load the program",
+					"Warning", JOptionPane.OK_OPTION);
 		}
 	}
 
 	void halt() {
-		setRunning(false);	
+		setRunning(false);
 	}
-	
-	public void setPeriod(int period) { 
-        timer.setDelay(period); 
-    }       
-	
+
+	public void setPeriod(int period) {
+		timer.setDelay(period);
+	}
+
 	/**
 	 * Main method that drives the whole simulator
-	 * @param args command line arguments are not used
+	 * 
+	 * @param args
+	 *            command line arguments are not used
 	 */
 	public static void main(String[] args) {
 		javax.swing.SwingUtilities.invokeLater(new Runnable() {
 			public void run() {
-				new MachineView(new MachineModel(true)); 
+				new MachineView(new MachineModel(true));
 			}
 		});
-	}  
+	}
 }

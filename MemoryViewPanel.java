@@ -78,7 +78,7 @@ public class MemoryViewPanel implements Observer{
 				dataHex[i].setText("");
 			}			
 			if(lower <= previousColor && previousColor < upper) {
-				System.out.println("\tagain" + previousColor);
+//				System.out.println("\tagain" + previousColor);
 				dataDecimal[previousColor].setBackground(Color.WHITE);
 				dataHex[previousColor].setBackground(Color.WHITE);
 				previousColor = -1;

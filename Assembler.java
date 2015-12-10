@@ -180,10 +180,10 @@ public class Assembler {
 		}
 		return retVal;
 	}
-	
-	 public static void main(String[] args) {
-	        StringBuilder error = new StringBuilder();
-	        int i = assemble(new File("42r.pasm"), new File("outputFile.pexe"), error);
-	        System.out.println(i + " " + error);
-	    }
+//	
+//	 public static void main(String[] args) {
+//	        StringBuilder error = new StringBuilder();
+//	        int i = assemble(new File("42r.pasm"), new File("outputFile.pexe"), error);
+//	        System.out.println(i + " " + error);
+//	    }
 }
