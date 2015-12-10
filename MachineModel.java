@@ -266,7 +266,7 @@ public class MachineModel extends Observable {
 		code.setCode(op, arg);
 	}
 	/**
-	 * Copys values from the location which is stored in data at location arg,
+	 * Copies values from the location which is stored in data at location arg,
 	 * to the location that is stored in data at location arg+1, with a length of 
 	 * what is stored in data at location arg+2
 	 * @param arg location of the 3 arguments that copy will use, given by the lambda 0x1D.
