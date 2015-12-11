@@ -200,7 +200,6 @@ public class MachineView extends Observable {
 		state.enter();
 		setChanged();
 		notifyObservers("Clear");
-		System.out.println(countObservers());
 	}
 
 	public void toggleAutoStep() {

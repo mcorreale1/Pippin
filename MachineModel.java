@@ -320,8 +320,10 @@ public class MachineModel extends Observable {
 	}
 	
 	public void clear() {
-		Memory m = new Memory();
-		m.clear();
+//		Memory m = new Memory();
+//		m.clear();
+		memory.clear();
+		code.clear();
 		cpu.accumulator = 0;
 		cpu.programCounter = 0;
 	}
