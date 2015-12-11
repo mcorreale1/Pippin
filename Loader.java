@@ -39,12 +39,12 @@ public class Loader {
 		}
 	}
 	// this main is only for initial testing and can be deleted after the load works correctly
-	public static void main(String[] args) {
-		MachineModel m = new MachineModel();
-		System.out.println(Loader.load(m, new File("factorial8.pexe")));
-		for(int i = 0; i < 12; i++) {
-			System.out.println(m.getCode().getText(i));         
-		}
-		System.out.println(0 + " " + m.getData(0));
-	}
+//	public static void main(String[] args) {
+//		MachineModel m = new MachineModel();
+//		System.out.println(Loader.load(m, new File("factorial8.pexe")));
+//		for(int i = 0; i < 12; i++) {
+//			System.out.println(m.getCode().getText(i));         
+//		}
+//		System.out.println(0 + " " + m.getData(0));
+//	}
 }
