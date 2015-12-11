@@ -147,8 +147,10 @@ public class MachineView extends Observable {
 		setChanged();
 		notifyObservers();
 		timer = new Timer(TICK, e -> {
-			if (autoStepOn)
+			if (autoStepOn){
 				step();
+				System.out.println("tick");
+			}
 		});
 		timer.start();
 		frame.setVisible(true);
@@ -365,6 +367,7 @@ public class MachineView extends Observable {
 		} else {
 			state = States.PROGRAM_LOADED_NOT_AUTOSTEPPING;
 		}
+		System.out.println(autoStepOn);
 		state.enter();
 		setChanged();
 		notifyObservers();
@@ -390,6 +393,7 @@ public class MachineView extends Observable {
 
 	public void setPeriod(int period) {
 		timer.setDelay(period);
+		
 	}
 
 	/**

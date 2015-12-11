@@ -16,12 +16,10 @@ public class ControlPanel implements Observer {
 	private JButton clearButton = new JButton("Clear");
 	private JButton runButton = new JButton("Run/Pause");;
 	private JButton reloadButton = new JButton("Reload");;
-
+	
 	public ControlPanel(MachineView machineView) {
 		this.machineView = machineView;
 		machineView.addObserver(this);
-		reloadButton.addActionListener(e -> machineView.reload());
-		runButton.addActionListener(e -> machineView.toggleAutoStep());
 	}
 
 	public JComponent createControlDisplay() {
