@@ -24,18 +24,15 @@ public class Loader {
 					if (valuesAreCode) {
 						model.setCode(int1, int2);
 					} else {
+						//Check that throws exception if trying to load data that is -1
+						//Not sure if correct way to throw this exception
+						if(int1 < 0) {
+							throw new IllegalArgumentException("Trying to store at invalid address");
+						}
 						model.setData(int1, int2);
 					}
 				}
 				parser.close();
-				
-				//Check that throws exception if trying to load data that is -1
-				//Not sure if correct way to throw this exception
-				if (int1 == -1) {
-					if (!valuesAreCode) {
-						throw new IllegalArgumentException();
-					}
-				}
 			}
 			return "success";
 				
