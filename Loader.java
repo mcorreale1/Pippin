@@ -28,14 +28,25 @@ public class Loader {
 					}
 				}
 				parser.close();
+				
+				//Check that throws exception if trying to load data that is -1
+				//Not sure if correct way to throw this exception
+				if (int1 == -1) {
+					if (!valuesAreCode) {
+						throw new IllegalArgumentException();
+					}
+				}
 			}
 			return "success";
+				
 		} catch (ArrayIndexOutOfBoundsException e) {
 			return("Array Index " + e.getMessage());
 		} catch (NoSuchElementException e) {
 			return("NoSuchElementException");
 		} catch (FileNotFoundException e1) {
 			return("File " + file.getName() + " Not Found");
+		} catch(IllegalArgumentException e) {
+			return("cannot load -1");
 		}
 	}
 	// this main is only for initial testing and can be deleted after the load works correctly
