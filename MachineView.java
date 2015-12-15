@@ -149,7 +149,6 @@ public class MachineView extends Observable {
 		timer = new Timer(TICK, e -> {
 			if (autoStepOn){
 				step();
-				System.out.println("tick");
 			}
 		});
 		timer.start();
@@ -367,7 +366,6 @@ public class MachineView extends Observable {
 		} else {
 			state = States.PROGRAM_LOADED_NOT_AUTOSTEPPING;
 		}
-		System.out.println(autoStepOn);
 		state.enter();
 		setChanged();
 		notifyObservers();
@@ -382,8 +380,9 @@ public class MachineView extends Observable {
 		setChanged();
 		notifyObservers("Load Code");
 		if (str != "success") {
-			JOptionPane.showMessageDialog(frame, "The file being selected has problems.\n" + "Cannot load the program",
+			JOptionPane.showMessageDialog(frame, "The file being selected has problems.\n" + str,
 					"Warning", JOptionPane.OK_OPTION);
+			clearAll();
 		}
 	}
 

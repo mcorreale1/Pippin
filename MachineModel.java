@@ -22,17 +22,6 @@ public class MachineModel extends Observable {
 
 		//Populating the INSTRUCTIONS TreeMap
 
-		//Entry for ADDI
-		INSTRUCTIONS.put(0xA, arg -> {
-			cpu.accumulator += arg;
-			cpu.programCounter++;
-		});
-
-		//Entry for ADD
-		INSTRUCTIONS.put(0xB, arg -> {
-			INSTRUCTIONS.get(0xA).execute(memory.getData(arg));
-		});
-
 		//Entry for NOP
 		INSTRUCTIONS.put(0x0, arg -> {
 			cpu.programCounter ++;
@@ -312,6 +301,7 @@ public class MachineModel extends Observable {
 			int pc  = cpu.programCounter;
 			int opcode = code.getOp(pc);
 			int arg = code.getArg(pc);
+			System.out.println(opcode);
 			get(opcode).execute(arg);
 		} catch(Exception e){
 			halt( ); throw e;

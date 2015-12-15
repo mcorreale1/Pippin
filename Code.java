@@ -4,9 +4,7 @@ public class Code {
 	
 	public static final int CODE_MAX = 256;
 	private int nextCodeLocation;
-	private long[] code = new long[CODE_MAX];
-	private int nextCodeIndex; 	
-	
+	private long[] code = new long[CODE_MAX];	
 	
 	public void setCode(int op, int arg) {
 		long longOp = op;
@@ -27,6 +25,9 @@ public class Code {
 	}
 	
 	public int getOp(int i) {
+		if(i < 0 || i > nextCodeLocation) {
+			throw new CodeAccessException("Attempting access code at index " + i);
+		}
 		return (int)(code[i] >> 32);
 	}
 	
@@ -47,19 +48,4 @@ public class Code {
 		
 		return builder.toString();
 	}
-	
-	public static void main(String[] args) {
-		  Code c = new Code();
-		  c.setCode(12, 2015);
-		  System.out.println(c.getText(0));
-		  System.out.println(c.code[0]);
-		  System.out.println(c.getOp(0));
-		  System.out.println(c.getArg(0));
-		  c.setCode(12, -2015);
-		  System.out.println(c.getText(1));
-		  System.out.println(c.code[1]);
-		  System.out.println(c.getOp(1));
-		  System.out.println(c.getArg(1));
-		}
-
 }

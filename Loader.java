@@ -14,10 +14,11 @@ public class Loader {
 			boolean valuesAreCode = true;
 			String line;
 			while(input.hasNextLine()) {
+				
 				line = input.nextLine();
 				Scanner parser = new Scanner(line);
 				int int1 = parser.nextInt(16);
-				if (int1 == -1) {
+				if (int1 == -1 && valuesAreCode) {
 					valuesAreCode = false;
 				} else {
 					int int2 = parser.nextInt(16);
@@ -27,7 +28,7 @@ public class Loader {
 						//Check that throws exception if trying to load data that is -1
 						//Not sure if correct way to throw this exception
 						if(int1 < 0) {
-							throw new IllegalArgumentException("Trying to store at invalid address");
+							throw new CodeAccessException("Trying to store at invalid address " + int1);
 						}
 						model.setData(int1, int2);
 					}
@@ -35,15 +36,14 @@ public class Loader {
 				parser.close();
 			}
 			return "success";
-				
 		} catch (ArrayIndexOutOfBoundsException e) {
 			return("Array Index " + e.getMessage());
 		} catch (NoSuchElementException e) {
 			return("NoSuchElementException");
 		} catch (FileNotFoundException e1) {
 			return("File " + file.getName() + " Not Found");
-		} catch(IllegalArgumentException e) {
-			return("cannot load -1");
+		} catch(CodeAccessException e) {
+			return(e.getMessage());
 		}
 	}
 	// this main is only for initial testing and can be deleted after the load works correctly
